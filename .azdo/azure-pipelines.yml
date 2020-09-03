@@ -82,12 +82,12 @@ stages:
       displayName: 'Tests & Coverage'
     - task: SonarCloudPrepare@1
       inputs:
-        SonarCloud: $(Sonar.Connection)
-        organization: '$(Sonar.Organization)'
+        SonarCloud: $[ variables.SonarConnection ]
+        organization: '$(SonarOrganization)'
         scannerMode: 'CLI'
         configMode: 'manual'
-        cliProjectKey: '$(Sonar.Key)'
-        cliProjectName: '$(Sonar.ProjectName)'
+        cliProjectKey: '$(SonarKey)'
+        cliProjectName: '$(SonarProjectName)'
         cliProjectVersion: '$(build.buildnumber)'
         cliSources: '$(modulePath)'
     - task: SonarCloudAnalyze@1
