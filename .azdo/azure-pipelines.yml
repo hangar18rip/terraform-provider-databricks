@@ -81,7 +81,7 @@ stages:
             targetType: 'inline'
             script: |
               make coverage
-              workingDirectory: $(modulePath)
+            workingDirectory: $(modulePath)
           displayName: 'Coverage'
         # - task: PublishPipelineArtifact@1
         #   inputs:
