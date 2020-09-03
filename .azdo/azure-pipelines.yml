@@ -12,7 +12,7 @@ stages:
 - stage: Build
   jobs:
   - job: Build
-    displayName: 'Build with Go $[ variables['go_version'] ]'
+    displayName: 'Build with Go'
     strategy:
       matrix:
         go_1_13:
