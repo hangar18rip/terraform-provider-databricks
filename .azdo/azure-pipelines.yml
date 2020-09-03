@@ -106,7 +106,7 @@ stages:
   displayName: Test on Azure
   jobs:
   - job: Deploy
-    displayName: 'Trying to deploy from $(image_name)'
+    displayName: 'Trying to deploy'
     strategy:
       matrix:
         windows:
