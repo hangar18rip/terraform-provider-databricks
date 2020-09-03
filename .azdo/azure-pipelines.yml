@@ -17,10 +17,10 @@ stages:
       matrix:
         go_1_13:
           go_version: '^1.13'
-        go_1_14:
-          go_version: '^1.14'
-        go_1_15:
-          go_version: '^1.15'
+        # go_1_14:
+        #   go_version: '^1.14'
+        # go_1_15:
+        #   go_version: '^1.15'
     pool:
       vmImage: 'ubuntu-latest'
     variables:
@@ -33,6 +33,7 @@ stages:
       inputs:
         version: $(go_version)
     - script: |
+        go version
         mkdir -p '$(GOBIN)'
         mkdir -p '$(GOPATH)/pkg'
         mkdir -p '$(modulePath)'
@@ -83,6 +84,7 @@ stages:
     - powershell: |
         Set-Location "$(modulePath)"
         Get-ChildItem
+        Get-Content "$(modulePath)/test-report.xml"
       displayName: Go setup debug
     - task: PublishTestResults@2
       inputs:
