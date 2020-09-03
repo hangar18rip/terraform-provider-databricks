@@ -77,7 +77,7 @@ stages:
       displayName: 'Build'
     - script: |
         go version
-        gotestsum --junitfile=test-report.xml --raw-command go test -v -json -short -coverprofile=cover.out
+        gotestsum --junitfile=test-report.xml --raw-command go test -v -json -short -coverprofile=cover.out ./...
         gocov convert cover.out | gocov-xml > coverage-report.xml
       workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
