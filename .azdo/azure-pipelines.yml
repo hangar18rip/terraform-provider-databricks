@@ -20,6 +20,10 @@ stages:
               go_version: '1.14'
         pool:
           vmImage: 'ubuntu-latest'
+        variables:
+          GOBIN:  '$(GOPATH)/bin' # Go binaries path
+          GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+          modulePath: '$(Build.SourcesDirectory)' # Path to the module's code
         steps:
         - script: |
             go get -v -t -d ./...
@@ -32,11 +36,11 @@ stages:
           displayName: Install Go $(go_version)
           inputs:
             version: $(go_version)
-        - powershell: |
-            gci env:
-            Write-Host "##vso[task.setvariable variable=GOBIN]$(GOROOT)"
-            Write-Host "##vso[task.setvariable variable=GOPATH]$(Build.SourcesDirectory)"
-          displayName: Go setup debug
+        # - powershell: |
+        #     gci env:
+        #     Write-Host "##vso[task.setvariable variable=GOBIN]$(GOROOT)"
+        #     Write-Host "##vso[task.setvariable variable=GOPATH]$(Build.SourcesDirectory)"
+        #   displayName: Go setup debug
         - task: Bash@3
           inputs:
             targetType: 'inline'
