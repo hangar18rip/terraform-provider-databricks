@@ -37,22 +37,38 @@ stages:
             Write-Host "##vso[task.setvariable variable=GOBIN]$(GOROOT)"
             Write-Host "##vso[task.setvariable variable=GOPATH]$(Build.SourcesDirectory)"
           displayName: Go setup debug
-        - script: |
-            curl -sSL "https://github.com/gotestyourself/gotestsum/releases/download/v0.4.2/gotestsum_0.4.2_linux_amd64.tar.gz" | sudo tar -xz -C /usr/local/bin gotestsum
-            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.25.0
-            curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
-          displayName: 'Prepare build'
-        - script: |
-            make lint
-          displayName: Lint
-        - script: |
-            make build
-          displayName: 'Build'
-        - script: |
-            make coverage
-          displayName: 'Coverage'
-        - task: PublishPipelineArtifact@1
+        - task: Bash@3
           inputs:
-            targetPath: '$(Pipeline.Workspace)'
-            artifact: 'gopack-$(go_version)'
-            publishLocation: 'pipeline'
+            targetType: 'inline'
+            script: |
+              curl -sSL "https://github.com/gotestyourself/gotestsum/releases/download/v0.4.2/gotestsum_0.4.2_linux_amd64.tar.gz" | sudo tar -xz -C /usr/local/bin gotestsum
+              curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.25.0
+              curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+            workingDirectory: $(Build.SourcesDirectory)
+          displayName: 'Prepare build'
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: |
+              make lint
+            workingDirectory: $(Build.SourcesDirectory)
+          displayName: Lint
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: |
+              make build
+            workingDirectory: $(Build.SourcesDirectory)
+          displayName: 'Build'
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: |
+              make coverage
+              workingDirectory: $(Build.SourcesDirectory)
+          displayName: 'Coverage'
+        # - task: PublishPipelineArtifact@1
+        #   inputs:
+        #     targetPath: '$(Pipeline.Workspace)'
+        #     artifact: 'gopack-$(go_version)'
+        #     publishLocation: 'pipeline'
