@@ -49,7 +49,6 @@ stages:
         echo '##vso[task.prependpath]$(GOROOT)/bin'
       displayName: 'Set up the Go workspace'
     - script: |
-        go version
         go get -v -t -d ./...
         if [ -f Gopkg.toml ]; then
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
@@ -70,12 +69,10 @@ stages:
       workingDirectory: $(modulePath)
       displayName: Get dependencies & tools
     - script: |
-        go version
         go build -mod vendor -v -ldflags="-X 'common.version=$(git describe --long --always | sed 's/v//')'" -o terraform-provider-databricks .
       workingDirectory: $(modulePath)
       displayName: 'Build'
     - script: |
-        go version
         gotestsum --junitfile=test-report.xml --raw-command go test -v -json -short -coverprofile=cover.out ./...
         gocov convert cover.out | gocov-xml > coverage-report.xml
       workingDirectory: $(modulePath)
