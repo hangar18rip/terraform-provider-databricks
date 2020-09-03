@@ -87,7 +87,7 @@ stages:
       displayName: 'Coverage'
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '$(Pipeline.Workspace)'
+        targetPath: '$(modulePath)/terraform-provider-databricks'
         artifact: 'gopack-$(go_version)'
         publishLocation: 'pipeline'
 - stage: TestOnAzure
