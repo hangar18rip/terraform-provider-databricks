@@ -35,7 +35,7 @@ stages:
         - powershell: |
             gci env:
             Write-Host "##vso[task.setvariable variable=GOBIN]$(GOROOT)"
-            Write-Host "##vso[task.setvariable variable=GOPATH]$(GOROOT)"
+            Write-Host "##vso[task.setvariable variable=GOPATH]$(Build.SourcesDirectory)"
           displayName: Go setup debug
         - script: |
             curl -sSL "https://github.com/gotestyourself/gotestsum/releases/download/v0.4.2/gotestsum_0.4.2_linux_amd64.tar.gz" | sudo tar -xz -C /usr/local/bin gotestsum
