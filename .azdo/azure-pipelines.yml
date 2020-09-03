@@ -83,11 +83,11 @@ stages:
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: 'test-report.xml'
+        testResultsFiles: '$(modulePath)/test-report.xml'
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: 'coverage-report.xml'
+        summaryFileLocation: '$(modulePath)/coverage-report.xml'
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(modulePath)/terraform-provider-databricks'
