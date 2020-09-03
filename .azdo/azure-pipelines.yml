@@ -30,7 +30,7 @@ stages:
       value: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
     - name: modulePath
       value: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
-    - group: build-terraform-provider-databricks
+    - group: 'build-terraform-provider-databricks'
     steps:
     - task: GoTool@0
       displayName: Install Go $(go_version)
@@ -82,7 +82,7 @@ stages:
       displayName: 'Tests & Coverage'
     - task: SonarCloudPrepare@1
       inputs:
-        SonarCloud: $[ variables.Sonar.Connection ]
+        SonarCloud: $(Sonar.Connection)
         organization: '$(Sonar.Organization)'
         scannerMode: 'CLI'
         configMode: 'manual'
