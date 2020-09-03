@@ -14,6 +14,13 @@ test:
 	@echo "✓ Running tests..."
 	@gotestsum --format pkgname-and-test-fails --no-summary=skipped --raw-command go test -v -json -short -coverprofile=coverage.txt ./...
 
+testext:
+	@echo "✓ Running tests..."
+	@go get github.com/axw/gocov/gocov
+	@go get github.com/AlekSi/gocov-xml
+	@gotestsum --format pkgname-and-test-fails --junitfile=test-report.xml --no-summary=skipped --raw-command go test -v -json -coverprofile=cover.out
+	@gocov convert cover.out | gocov-xml > coverage-report.xml
+
 coverage: test
 	@echo "✓ Opening coverage for unit tests..."
 	@go tool cover -html=coverage.txt
