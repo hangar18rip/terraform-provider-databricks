@@ -80,27 +80,23 @@ stages:
         gocov convert cover.out | gocov-xml > coverage-report.xml
       workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
-    - task: SonarCloudPrepare@1
-      inputs:
-        SonarCloud: $[ variables.SonarConnection ]
-        organization: '$(SonarOrganization)'
-        scannerMode: 'CLI'
-        configMode: 'manual'
-        cliProjectKey: '$(SonarKey)'
-        cliProjectName: '$(SonarProjectName)'
-        cliProjectVersion: '$(build.buildnumber)'
-        cliSources: '$(modulePath)'
-    - task: SonarCloudAnalyze@1
-    - task: SonarCloudPublish@1
-      inputs:
-        pollingTimeoutSec: '300'
-    # - powershell: |
-    #     Set-Location "$(modulePath)"
-    #     Get-ChildItem
-    #     Get-Content "$(modulePath)/test-report.xml"
-    #     Get-Content "$(modulePath)/cover.out"
-    #     Get-Content "$(modulePath)/coverage-report.xml"
-    #   displayName: Go setup debug
+    # - task: SonarCloudPrepare@1
+    #   inputs:
+    #     SonarCloud: $[ variables.SonarConnection ]
+    #     organization: '$(SonarOrganization)'
+    #     scannerMode: 'CLI'
+    #     configMode: 'manual'
+    #     cliProjectKey: '$(SonarKey)'
+    #     cliProjectName: '$(SonarProjectName)'
+    #     cliProjectVersion: '$(build.buildnumber)'
+    #     cliSources: '$(modulePath)'
+    # - task: SonarCloudAnalyze@1
+    # - task: SonarCloudPublish@1
+    #   inputs:
+    #     pollingTimeoutSec: '300'
+    - powershell: |
+        gci env:
+      displayName: Go setup debug
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
