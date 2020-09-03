@@ -26,8 +26,8 @@ stages:
     variables:
       GOBIN:  '$(GOPATH)/bin' # Go binaries path
       GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-      # modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
-      modulePath: $(system.sourcesdirectory)
+      modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+      # modulePath: $(system.sourcesdirectory)
     steps:
     - task: GoTool@0
       displayName: Install Go $(go_version)
@@ -35,12 +35,13 @@ stages:
         version: $(go_version)
     - script: |
         go version
+        pwd
         mkdir -p '$(GOBIN)'
         mkdir -p '$(GOPATH)/pkg'
         mkdir -p '$(modulePath)'
         shopt -s extglob
         shopt -s dotglob
-        # mv !(gopath) '$(modulePath)'
+        mv !(gopath) '$(modulePath)'
         echo '##vso[task.prependpath]$(GOBIN)'
         echo '##vso[task.prependpath]$(GOROOT)/bin'
       displayName: 'Set up the Go workspace'
@@ -61,26 +62,17 @@ stages:
           curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
         workingDirectory: $(modulePath)
       displayName: 'Prepare build'
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: |
-          make lint
-        workingDirectory: $(modulePath)
+    - script: |
+        make lint
+      workingDirectory: $(modulePath)
       displayName: Lint
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: |
-          make build
-        workingDirectory: $(modulePath)
+    - script: |
+        make build
+      workingDirectory: $(modulePath)
       displayName: 'Build'
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: |
-          make testext
-        workingDirectory: $(modulePath)
+    - script: |
+        make testext
+      workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
     - powershell: |
         Set-Location "$(modulePath)"
