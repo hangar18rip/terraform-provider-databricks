@@ -85,14 +85,16 @@ stages:
           make coverage
         workingDirectory: $(modulePath)
       displayName: 'Coverage'
-    # - task: PublishPipelineArtifact@1
-    #   inputs:
-    #     targetPath: '$(Pipeline.Workspace)'
-    #     artifact: 'gopack-$(go_version)'
-    #     publishLocation: 'pipeline'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'gopack-$(go_version)'
+        publishLocation: 'pipeline'
 - stage: TestOnAzure
+  dependsOn: Build
+  displayName: Test on Azure
   jobs:
-  - job: Build
+  - job: Deploy
     displayName: 'Trying to deploy from $(image_name)'
     strategy:
       matrix:
@@ -100,8 +102,8 @@ stages:
           image_name: 'windows-latest'
         macos:
           image_name: 'macos-latest'
-        linux:
-          image_name: 'linux-latest'
+        ubuntu:
+          image_name: 'ubuntu-latest'
     pool:
       vmImage: $(image_name)
     steps:
