@@ -12,15 +12,15 @@ stages:
 - stage: Build
   jobs:
   - job: Build
-    displayName: 'Build with Go'
+    displayName: 'Build with Go $[ variables['go_version'] ]'
     strategy:
       matrix:
         go_1_13:
           go_version: '1.13'
-        # go_1_14:
-        #   go_version: '1.14'
-        # go_1_15:
-        #   go_version: '1.15'
+        go_1_14:
+          go_version: '1.14'
+        go_1_15:
+          go_version: '1.15'
     pool:
       vmImage: 'ubuntu-latest'
     variables:
@@ -85,6 +85,8 @@ stages:
         Set-Location "$(modulePath)"
         Get-ChildItem
         Get-Content "$(modulePath)/test-report.xml"
+        Get-Content "$(modulePath)/cover.out"
+        Get-Content "$(modulePath)/coverage-report.xml"
       displayName: Go setup debug
     - task: PublishTestResults@2
       inputs:
