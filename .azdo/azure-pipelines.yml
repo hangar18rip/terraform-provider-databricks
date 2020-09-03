@@ -17,10 +17,10 @@ stages:
       matrix:
         go_1_13:
           go_version: '1.13'
-        # go_1_14:
-        #   go_version: '1.14'
-        # go_1_15:
-        #   go_version: '1.15'
+        go_1_14:
+          go_version: '1.14'
+        go_1_15:
+          go_version: '1.15'
     pool:
       vmImage: 'ubuntu-latest'
     variables:
@@ -66,10 +66,6 @@ stages:
         go get github.com/AlekSi/gocov-xml
       workingDirectory: $(modulePath)
       displayName: Get dependencies & tools
-    # - script: |
-    #     make lint
-    #   workingDirectory: $(modulePath)
-    #   displayName: Lint
     - script: |
         go version
         go build -mod vendor -v -ldflags="-X 'common.version=$(git describe --long --always | sed 's/v//')'" -o terraform-provider-databricks .
@@ -81,13 +77,13 @@ stages:
         gocov convert cover.out | gocov-xml > coverage-report.xml
       workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
-    - powershell: |
-        Set-Location "$(modulePath)"
-        Get-ChildItem
-        Get-Content "$(modulePath)/test-report.xml"
-        Get-Content "$(modulePath)/cover.out"
-        Get-Content "$(modulePath)/coverage-report.xml"
-      displayName: Go setup debug
+    # - powershell: |
+    #     Set-Location "$(modulePath)"
+    #     Get-ChildItem
+    #     Get-Content "$(modulePath)/test-report.xml"
+    #     Get-Content "$(modulePath)/cover.out"
+    #     Get-Content "$(modulePath)/coverage-report.xml"
+    #   displayName: Go setup debug
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
