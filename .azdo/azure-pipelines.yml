@@ -80,20 +80,24 @@ stages:
         gocov convert cover.out | gocov-xml > coverage-report.xml
       workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
-    # - task: SonarCloudPrepare@1
-    #   inputs:
-    #     SonarCloud: $[ variables.SonarConnection ]
-    #     organization: '$(SonarOrganization)'
-    #     scannerMode: 'CLI'
-    #     configMode: 'manual'
-    #     cliProjectKey: '$(SonarKey)'
-    #     cliProjectName: '$(SonarProjectName)'
-    #     cliProjectVersion: '$(build.buildnumber)'
-    #     cliSources: '$(modulePath)'
-    # - task: SonarCloudAnalyze@1
-    # - task: SonarCloudPublish@1
-    #   inputs:
-    #     pollingTimeoutSec: '300'
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'SonarCloud Olivier Delmotte' # '$(SonarConnection)'
+        organization: '$(SonarOrganization)'
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: '$(SonarKey)'
+        cliProjectName: '$(SonarProjectName)'
+        cliProjectVersion: '$(build.buildnumber)'
+        cliSources: '$(modulePath)'
+        extraProperties: |
+          sonar.junit.reportsPath=test-report.xml
+          sonar.java.coveragePlugin=jacoco
+          sonar.jacoco.reportPath=coverage-report.xml
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
     - powershell: |
         gci env:
       displayName: Go setup debug
