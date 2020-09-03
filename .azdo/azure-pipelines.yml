@@ -62,16 +62,19 @@ stages:
           curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
         workingDirectory: $(modulePath)
       displayName: 'Prepare build'
+    # - script: |
+    #     make lint
+    #   workingDirectory: $(modulePath)
+    #   displayName: Lint
     - script: |
-        make lint
-      workingDirectory: $(modulePath)
-      displayName: Lint
-    - script: |
-        make build
+        go build -mod vendor -v -ldflags="-X 'common.version=$(git describe --long --always | sed 's/v//')'" -o terraform-provider-databricks .
       workingDirectory: $(modulePath)
       displayName: 'Build'
     - script: |
-        make testext
+        go get github.com/axw/gocov/gocov
+        go get github.com/AlekSi/gocov-xml
+        gotestsum --junitfile=test-report.xml --raw-command go test -v -json -short -coverprofile=cover.out
+        gocov convert cover.out | gocov-xml > coverage-report.xml
       workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
     - powershell: |
