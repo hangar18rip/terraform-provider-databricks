@@ -82,7 +82,7 @@ stages:
       displayName: 'Tests & Coverage'
     - task: SonarCloudPrepare@1
       inputs:
-        SonarCloud: ''$(Sonar.Connection)'
+        SonarCloud: '$(Sonar.Connection)'
         organization: '$(Sonar.Organization)'
         scannerMode: 'CLI'
         configMode: 'manual'
