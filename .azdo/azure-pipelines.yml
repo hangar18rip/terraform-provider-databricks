@@ -36,11 +36,11 @@ stages:
           displayName: Install Go $(go_version)
           inputs:
             version: $(go_version)
-        # - powershell: |
-        #     gci env:
-        #     Write-Host "##vso[task.setvariable variable=GOBIN]$(GOROOT)"
-        #     Write-Host "##vso[task.setvariable variable=GOPATH]$(Build.SourcesDirectory)"
-        #   displayName: Go setup debug
+        - powershell: |
+            gci env:
+            # Write-Host "##vso[task.setvariable variable=GOBIN]$(GOROOT)"
+            # Write-Host "##vso[task.setvariable variable=GOPATH]$(Build.SourcesDirectory)"
+          displayName: Go setup debug
         - task: Bash@3
           inputs:
             targetType: 'inline'
