@@ -26,7 +26,8 @@ stages:
     variables:
       GOBIN:  '$(GOPATH)/bin' # Go binaries path
       GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-      modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+      # modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+      modulePath: $(system.sourcesdirectory)
     steps:
     - task: GoTool@0
       displayName: Install Go $(go_version)
@@ -39,7 +40,7 @@ stages:
         mkdir -p '$(modulePath)'
         shopt -s extglob
         shopt -s dotglob
-        mv !(gopath) '$(modulePath)'
+        # mv !(gopath) '$(modulePath)'
         echo '##vso[task.prependpath]$(GOBIN)'
         echo '##vso[task.prependpath]$(GOROOT)/bin'
       displayName: 'Set up the Go workspace'
