@@ -88,7 +88,10 @@ stages:
         cliProjectVersion: '$(build.buildnumber)'
         cliSources: '$(modulePath)'
         extraProperties: |
-          sonar.exclusions=**/*.scala
+          sonar.exclusions=**/testdata/**
+          sonar.c.file.suffixes=-
+          sonar.cpp.file.suffixes=-
+          sonar.objc.file.suffixes=-        
           sonar.junit.reportsPath=test-report.xml
           sonar.java.coveragePlugin=jacoco
           sonar.jacoco.reportPath=coverage-report.xml
