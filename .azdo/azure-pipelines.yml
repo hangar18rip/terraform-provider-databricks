@@ -80,10 +80,15 @@ stages:
           make testext
         workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
+    - powershell: |
+        Set-Location "$(modulePath)"
+        Get-ChildItem
+      displayName: Go setup debug
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
         testResultsFiles: '$(modulePath)/test-report.xml'
+        testRunTitle: 'Unit Tests on $(go_version)'
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
