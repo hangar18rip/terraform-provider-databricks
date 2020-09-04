@@ -88,7 +88,7 @@ stages:
         cliProjectVersion: '$(build.buildnumber)'
         cliSources: '$(modulePath)'
         extraProperties: |
-          sonar.exclusions=**/testdata/**;**/website/**
+          sonar.exclusions=**/testdata/**,**/website/**
           sonar.c.file.suffixes=-
           sonar.cpp.file.suffixes=-
           sonar.objc.file.suffixes=-        
