@@ -29,7 +29,7 @@ stages:
     - name: GOBIN
       value: '$(GOPATH)/bin' # Go binaries path
     - name: modulePath
-      value: '$(GOPATH)' # /src/github.com/$(build.repository.name)' # Path to the module's code
+      value: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
     - group: 'build-terraform-provider-databricks'
     steps:
     - task: GoTool@0
@@ -44,7 +44,7 @@ stages:
         mkdir -p '$(modulePath)'
         shopt -s extglob
         shopt -s dotglob
-        # mv !(gopath) '$(modulePath)'
+        mv !(gopath) '$(modulePath)'
         echo '##vso[task.prependpath]$(GOBIN)'
         echo '##vso[task.prependpath]$(GOROOT)/bin'
       displayName: 'Set up the Go workspace'
