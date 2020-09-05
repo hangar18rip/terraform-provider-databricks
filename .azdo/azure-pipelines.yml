@@ -84,6 +84,7 @@ stages:
       workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
     - task: SonarCloudPrepare@1
+      displayName: Prepare SonarCloud run
       condition: and(succeeded(), eq(variables.run_sonar, true))
       inputs:
         SonarCloud: 'SonarCloud Olivier Delmotte' # '$(SonarConnection)'
@@ -103,8 +104,10 @@ stages:
           sonar.java.coveragePlugin=jacoco
           sonar.jacoco.reportPath=coverage-report.xml
     - task: SonarCloudAnalyze@1
+      displayName: Run SonarCloud analysis
       condition: and(succeeded(), eq(variables.run_sonar, true))
     - task: SonarCloudPublish@1
+      displayName: Waiting SonarCloud analysis
       condition: and(succeeded(), eq(variables.run_sonar, true))
       inputs:
         pollingTimeoutSec: '300'
@@ -120,6 +123,12 @@ stages:
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(modulePath)/coverage-report.xml'
+    - script: |
+        curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+        goreleaser build
+        # goreleaser --snapshot --skip-publish --rm-dist
+      workingDirectory: $(modulePath)
+      displayName: GoReleaser
     - task: PublishPipelineArtifact@1
       condition: and(succeeded(), eq(variables.publish, true))
       inputs:
