@@ -79,8 +79,8 @@ stages:
       workingDirectory: $(modulePath)
       displayName: 'Build'
     - script: |
-        gotestsum --junitfile=test-report.xml --raw-command go test -v -json -short -coverprofile=cover.out ./...
-        gocov convert cover.out | gocov-xml > coverage-report.xml
+        gotestsum --junitfile=$(system.defaultWorkingDirectory)/test-report.xml --raw-command go test -v -json -short -coverprofile=$(system.defaultWorkingDirectory)/cover.out ./...
+        gocov convert $(system.defaultWorkingDirectory)/cover.out | gocov-xml > $(system.defaultWorkingDirectory)/coverage-report.xml
       workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
     - task: SonarCloudPrepare@1
@@ -100,9 +100,9 @@ stages:
           sonar.c.file.suffixes=-
           sonar.cpp.file.suffixes=-
           sonar.objc.file.suffixes=-        
-          sonar.junit.reportsPath=test-report.xml
+          sonar.junit.reportsPath=$(system.defaultWorkingDirectory)/test-report.xml
           sonar.java.coveragePlugin=jacoco
-          sonar.jacoco.reportPath=coverage-report.xml
+          sonar.jacoco.reportPath=$(system.defaultWorkingDirectory)/coverage-report.xml
     - task: SonarCloudAnalyze@1
       displayName: Run SonarCloud analysis
       condition: and(succeeded(), eq(variables.run_sonar, true))
@@ -117,14 +117,14 @@ stages:
     - task: PublishTestResults@2
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '$(modulePath)/test-report.xml'
+        testResultsFiles: '$(system.defaultWorkingDirectory)/test-report.xml'
         testRunTitle: 'Unit Tests on $(go_version)'
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(modulePath)/coverage-report.xml'
+        summaryFileLocation: '$(system.defaultWorkingDirectory)/coverage-report.xml'
     - script: |
-        goreleaser build
+        goreleaser build --snapshot --rm-dist 
         # goreleaser --snapshot --skip-publish --rm-dist
       workingDirectory: $(modulePath)
       displayName: GoReleaser
@@ -132,7 +132,7 @@ stages:
     - task: PublishPipelineArtifact@1
       condition: and(succeeded(), eq(variables.publish, true))
       inputs:
-        targetPath: '$(modulePath)/terraform-provider-databricks'
+        targetPath: '$(modulePath)/dist'
         artifact: 'gopack-$(go_version)'
         publishLocation: 'pipeline'
 - stage: TestOnAzure
