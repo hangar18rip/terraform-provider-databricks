@@ -17,10 +17,16 @@ stages:
       matrix:
         go_1_13:
           go_version: '1.13'
-        # go_1_14:
-        #   go_version: '1.14'
-        # go_1_15:
-        #   go_version: '1.15'
+          run_sonar: true
+          publish: true
+        go_1_14:
+          go_version: '1.14'
+          run_sonar: false
+          publish: false
+        go_1_15:
+          go_version: '1.15'
+          run_sonar: false
+          publish: false
     pool:
       vmImage: 'ubuntu-latest'
     variables:
@@ -78,6 +84,7 @@ stages:
       workingDirectory: $(modulePath)
       displayName: 'Tests & Coverage'
     - task: SonarCloudPrepare@1
+      condition: and(succeeded(), eq(variables.run_sonar, true))
       inputs:
         SonarCloud: 'SonarCloud Olivier Delmotte' # '$(SonarConnection)'
         organization: '$(SonarOrganization)'
@@ -96,7 +103,9 @@ stages:
           sonar.java.coveragePlugin=jacoco
           sonar.jacoco.reportPath=coverage-report.xml
     - task: SonarCloudAnalyze@1
+      condition: and(succeeded(), eq(variables.run_sonar, true))
     - task: SonarCloudPublish@1
+      condition: and(succeeded(), eq(variables.run_sonar, true))
       inputs:
         pollingTimeoutSec: '300'
     - powershell: |
@@ -112,6 +121,7 @@ stages:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(modulePath)/coverage-report.xml'
     - task: PublishPipelineArtifact@1
+      condition: and(succeeded(), eq(variables.publish, true))
       inputs:
         targetPath: '$(modulePath)/terraform-provider-databricks'
         artifact: 'gopack-$(go_version)'
