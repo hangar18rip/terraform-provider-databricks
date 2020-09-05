@@ -124,7 +124,7 @@ stages:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(system.defaultWorkingDirectory)/coverage-report.xml'
     - script: |
-        goreleaser build
+        goreleaser build --snapshot --rm-dist 
         # goreleaser --snapshot --skip-publish --rm-dist
       workingDirectory: $(modulePath)
       displayName: GoReleaser
@@ -132,7 +132,7 @@ stages:
     - task: PublishPipelineArtifact@1
       condition: and(succeeded(), eq(variables.publish, true))
       inputs:
-        targetPath: '$(modulePath)/terraform-provider-databricks'
+        targetPath: '$(modulePath)/dist/**'
         artifact: 'gopack-$(go_version)'
         publishLocation: 'pipeline'
 - stage: TestOnAzure
