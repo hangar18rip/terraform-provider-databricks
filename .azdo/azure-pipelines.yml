@@ -75,6 +75,7 @@ stages:
       workingDirectory: $(modulePath)
       displayName: Get dependencies & tools
     - script: |
+        go mod vendor
         go build -mod vendor -v -ldflags="-X 'common.version=$(git describe --long --always | sed 's/v//')'" -o terraform-provider-databricks .
       workingDirectory: $(modulePath)
       displayName: 'Build'
