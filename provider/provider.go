@@ -7,8 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/databrickslabs/databricks-terraform/access"
 	"github.com/databrickslabs/databricks-terraform/common"
@@ -20,7 +19,7 @@ import (
 )
 
 // DatabricksProvider returns the entire terraform provider object
-func DatabricksProvider() terraform.ResourceProvider {
+func DatabricksProvider() *schema.Provider {
 	return &schema.Provider{
 		DataSourcesMap: map[string]*schema.Resource{
 			"databricks_aws_crossaccount_policy": access.DataAwsCrossAccountRolicy(),
@@ -217,7 +216,7 @@ func DatabricksProvider() terraform.ResourceProvider {
 			"azure_use_pat_for_cli": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     true,
+				Default:     false,
 				Description: "Create ephemeral PAT tokens also for AZ CLI authenticated requests",
 			},
 			"azure_auth": {
