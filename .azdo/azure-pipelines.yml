@@ -162,27 +162,27 @@ stages:
     strategy:
       matrix:
         windows_0_12:
-          terraform_version: '0.12.*'
+          terraform_version: '0.12.29'
           image_name: 'windows-latest'
           provider_folder: 'terraform-provider-databricks_windows_amd64'
         windows_0_13:
-          terraform_version: '0.13.*'
+          terraform_version: '0.13.2'
           image_name: 'windows-latest'
           provider_folder: 'terraform-provider-databricks_windows_amd64'
         macos_0_12:
-          terraform_version: '0.12.*'
+          terraform_version: '0.12.29'
           image_name: 'macos-latest'
           provider_folder: 'terraform-provider-databricks_darwin_amd64'
         macos_0_13:
-          terraform_version: '0.13.*'
+          terraform_version: '0.13.2'
           image_name: 'macos-latest'
           provider_folder: 'terraform-provider-databricks_darwin_amd64'
         ubuntu_0_12:
-          terraform_version: '0.12.*'
+          terraform_version: '0.12.29'
           image_name: 'ubuntu-latest'
           provider_folder: 'terraform-provider-databricks_linux_amd64'
         ubuntu_0_13:
-          terraform_version: '0.13.*'
+          terraform_version: '0.13.2'
           image_name: 'ubuntu-latest'
           provider_folder: 'terraform-provider-databricks_linux_amd64'  
     pool:
