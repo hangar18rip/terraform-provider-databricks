@@ -75,7 +75,8 @@ stages:
       workingDirectory: $(modulePath)
       displayName: Get dependencies & tools
     - script: |
-        go build -mod readonly -v -ldflags="-X 'common.version=$(git describe --long --always | sed 's/v//')'" -o terraform-provider-databricks .
+        go mod vendor
+        go build -mod vendor -v -ldflags="-X 'common.version=$(git describe --long --always | sed 's/v//')'" -o terraform-provider-databricks .
       workingDirectory: $(modulePath)
       displayName: 'Build'
     - script: |
@@ -129,11 +130,17 @@ stages:
       workingDirectory: $(modulePath)
       displayName: GoReleaser
       condition: and(succeeded(), eq(variables.publish, true))
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(modulePath)/dist/'
+        Contents: '**'
+        TargetFolder: '$(build.artifactstagingdirectory)/providers'
+        flattenFolders: true
     - task: PublishPipelineArtifact@1
       condition: and(succeeded(), eq(variables.publish, true))
       inputs:
-        targetPath: '$(modulePath)/dist/**'
-        artifact: 'gopack-$(go_version)'
+        targetPath: '$(build.artifactstagingdirectory)/providers'
+        artifact: 'providers'
         publishLocation: 'pipeline'
 - stage: TestOnAzure
   dependsOn: Build
