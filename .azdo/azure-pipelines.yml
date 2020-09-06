@@ -201,5 +201,6 @@ stages:
         terraformVersion: $(terraform_version)
     - powershell: |
         gci env:
-        gci
-      displayName: Go setup debug
+        cd '$(system.defaultWorkingDirectory)'
+        gci -recurse
+      displayName: debug
