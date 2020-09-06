@@ -18,11 +18,11 @@ stages:
         go_1_13:
           go_version: '1.13'
           run_sonar: true
-          publish: true
+          publish: false
         go_1_14:
           go_version: '1.14'
           run_sonar: false
-          publish: false
+          publish: true
         go_1_15:
           go_version: '1.15'
           run_sonar: false
@@ -116,11 +116,13 @@ stages:
         gci env:
       displayName: Go setup debug
     - task: PublishTestResults@2
+      displayName: Publish test results
       inputs:
         testResultsFormat: 'JUnit'
         testResultsFiles: '$(system.defaultWorkingDirectory)/test-report.xml'
         testRunTitle: 'Unit Tests on $(go_version)'
     - task: PublishCodeCoverageResults@1
+      displayName: Publish coverage results
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(system.defaultWorkingDirectory)/coverage-report.xml'
@@ -128,16 +130,18 @@ stages:
         goreleaser build --snapshot --rm-dist 
         # goreleaser --snapshot --skip-publish --rm-dist
       workingDirectory: $(modulePath)
-      displayName: GoReleaser
+      displayName: Generate providers
       condition: and(succeeded(), eq(variables.publish, true))
     - task: CopyFiles@2
       condition: and(succeeded(), eq(variables.publish, true))
+      displayName: Prepare providers
       inputs:
         SourceFolder: '$(modulePath)/dist/'
         Contents: '**'
         TargetFolder: '$(build.artifactstagingdirectory)/providers'
         flattenFolders: true
     - task: PublishPipelineArtifact@1
+      displayName: Publish providers as a pipeline artifact
       condition: and(succeeded(), eq(variables.publish, true))
       inputs:
         targetPath: '$(build.artifactstagingdirectory)/providers'
