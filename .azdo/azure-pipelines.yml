@@ -146,6 +146,13 @@ stages:
         targetPath: '$(build.artifactstagingdirectory)/providers'
         artifact: 'providers'
         publishLocation: 'pipeline'
+    - task: PublishPipelineArtifact@1
+      displayName: Publish scripts as a pipeline artifact
+      condition: and(succeeded(), eq(variables.publish, true))
+      inputs:
+        targetPath: '$(modulePath)/scripts'
+        artifact: 'scripts'
+        publishLocation: 'pipeline'
 - stage: TestOnAzure
   dependsOn: Build
   displayName: Test on Azure
@@ -154,17 +161,45 @@ stages:
     displayName: 'Trying to deploy'
     strategy:
       matrix:
-        windows:
+        windows_0_12:
+          terraform_version: '0.12.*'
           image_name: 'windows-latest'
-        macos:
+          provider_folder: 'terraform-provider-databricks_windows_amd64'
+        windows_0_13:
+          terraform_version: '0.13.*'
+          image_name: 'windows-latest'
+          provider_folder: 'terraform-provider-databricks_windows_amd64'
+        macos_0_12:
+          terraform_version: '0.12.*'
           image_name: 'macos-latest'
-        ubuntu:
+          provider_folder: 'terraform-provider-databricks_darwin_amd64'
+        macos_0_13:
+          terraform_version: '0.13.*'
+          image_name: 'macos-latest'
+          provider_folder: 'terraform-provider-databricks_darwin_amd64'
+        ubuntu_0_12:
+          terraform_version: '0.12.*'
           image_name: 'ubuntu-latest'
+          provider_folder: 'terraform-provider-databricks_linux_amd64'
+        ubuntu_0_13:
+          terraform_version: '0.13.*'
+          image_name: 'ubuntu-latest'
+          provider_folder: 'terraform-provider-databricks_linux_amd64'  
     pool:
       vmImage: $(image_name)
     steps:
-    - script: |
-        echo "hello"
+    - checkout: none
+    - download: current  # refers to artifacts published by current pipeline
+      artifact: providers
+      patterns: '$(provider_folder)/**'
+    - download: current  # refers to artifacts published by current pipeline
+      artifact: scripts
+      patterns: 'az*/**'
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+      displayName: 'Install Terraform ${{ parameters.TerraformVersion }}'
+      inputs:
+        terraformVersion: $(terraform_version)
     - powershell: |
         gci env:
+        gci
       displayName: Go setup debug
