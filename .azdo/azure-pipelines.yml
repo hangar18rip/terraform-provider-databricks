@@ -139,7 +139,6 @@ stages:
         SourceFolder: '$(modulePath)/dist/'
         Contents: '**'
         TargetFolder: '$(build.artifactstagingdirectory)/providers'
-        flattenFolders: true
     - task: PublishPipelineArtifact@1
       displayName: Publish providers as a pipeline artifact
       condition: and(succeeded(), eq(variables.publish, true))
