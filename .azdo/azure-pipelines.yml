@@ -196,7 +196,7 @@ stages:
       artifact: scripts
       patterns: 'az*/**'
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-      displayName: 'Install Terraform ${{ parameters.TerraformVersion }}'
+      displayName: 'Install Terraform $(terraform_version)'
       inputs:
         terraformVersion: $(terraform_version)
     - powershell: |
