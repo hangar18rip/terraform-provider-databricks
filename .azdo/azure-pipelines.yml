@@ -131,6 +131,7 @@ stages:
       displayName: GoReleaser
       condition: and(succeeded(), eq(variables.publish, true))
     - task: CopyFiles@2
+      condition: and(succeeded(), eq(variables.publish, true))
       inputs:
         SourceFolder: '$(modulePath)/dist/'
         Contents: '**'
