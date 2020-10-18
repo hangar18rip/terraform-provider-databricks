@@ -34,8 +34,8 @@ stages:
       value: '$(system.defaultWorkingDirectory)' # Go workspace path
     - name: GOBIN
       value: '$(GOPATH)/bin' # Go binaries path
-    - name: modulePath
-      value: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+    - name: modulePath #value: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+      value: '$(GOPATH)
     - group: 'build-terraform-provider-databricks'
     steps:
     - task: GoTool@0
