@@ -35,9 +35,7 @@ stages:
     - name: GOBIN
       value: '$(GOPATH)/bin' # Go binaries path
     - name: modulePath
-      value: '$(GOPATH)'
-# Path to the module's code
-# value: '$(GOPATH)/src/github.com/$(build.repository.name)' 
+      value: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
     - group: 'build-terraform-provider-databricks'
     steps:
     - task: GoTool@0
@@ -52,9 +50,9 @@ stages:
         mkdir -p '$(modulePath)'
         shopt -s extglob
         shopt -s dotglob
+        mv !(gopath) '$(modulePath)'
         echo '##vso[task.prependpath]$(GOBIN)'
         echo '##vso[task.prependpath]$(GOROOT)/bin'
-        rm go.mod -f
       displayName: 'Set up the Go workspace'
     - script: |
         go get -v -t -d ./...
@@ -77,7 +75,8 @@ stages:
       workingDirectory: $(modulePath)
       displayName: Get dependencies & tools
     - script: |
-        go build -v -ldflags="-X 'common.version=$(git describe --long --always | sed 's/v//')'" -o terraform-provider-databricks .
+        go mod vendor
+        go build -mod vendor -v -ldflags="-X 'common.version=$(git describe --long --always | sed 's/v//')'" -o terraform-provider-databricks .
       workingDirectory: $(modulePath)
       displayName: 'Build'
     - script: |
